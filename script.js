@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      modalPrimaryBtnText.textContent = "Open HRIS & Install";
+      modalPrimaryBtnText.textContent = "Install Application Now";
     } else {
       modalPlatformBadge.textContent = "ANDROID MOBILE APP";
       modalPlatformBadge.style.color = "#008f47";
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modalInstructions.innerHTML = `
         <div class="instruction-step">
           <span class="step-num">1</span>
-          <span class="step-text">Click <strong>Install Application</strong> below.</span>
+          <span class="step-text">Click <strong>Install Application Now</strong> below.</span>
         </div>
         <div class="instruction-step">
           <span class="step-num">2</span>
