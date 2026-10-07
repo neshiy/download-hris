@@ -1,24 +1,43 @@
-// Configuration: Set your actual download links or app store URLs here
-const APP_DOWNLOAD_CONFIG = {
-  ios: {
-    title: "iOS Application",
-    url: "#", // Replace with your TestFlight, App Store, or direct IPA link
-    message: "Redirecting to Apple App Store..."
-  },
-  android: {
-    title: "Android Application",
-    url: "#", // Replace with your APK download link or Google Play Store URL
-    message: "Starting Android APK download..."
-  }
-};
+// Seven Shine HRIS Target URL
+const TARGET_APP_URL = "https://sevenshine-pharmaceuticals-hris.onrender.com";
+
+// Register Service Worker for PWA compliance
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch((err) => {
+      console.log('ServiceWorker registration optional:', err);
+    });
+  });
+}
+
+// Global variable to capture native PWA install prompt
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const cardContainer = document.getElementById('cardContainer');
   const btnIos = document.getElementById('btnIos');
   const btnAndroid = document.getElementById('btnAndroid');
-  const logoWrapper = document.querySelector('.logo-wrapper');
+  const mainLogo = document.getElementById('mainLogo');
 
-  // 1. Subtle 3D Card Tilt Effect on Mouse Move
+  // Modal Elements
+  const installModal = document.getElementById('installModal');
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalCancelBtn = document.getElementById('modalCancelBtn');
+  const modalPlatformBadge = document.getElementById('modalPlatformBadge');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalSubtitle = document.getElementById('modalSubtitle');
+  const modalInstructions = document.getElementById('modalInstructions');
+  const modalPrimaryBtn = document.getElementById('modalPrimaryBtn');
+  const modalPrimaryBtnText = document.getElementById('modalPrimaryBtnText');
+
+  let currentPlatform = 'android';
+
+  // 1. Subtle 3D Card Tilt Effect on Mouse Move (Desktop)
   if (cardContainer && window.matchMedia('(pointer: fine)').matches) {
     document.addEventListener('mousemove', (e) => {
       const rect = cardContainer.getBoundingClientRect();
@@ -39,61 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Ripple Effect on Button Press
+  // 2. Button Ripple Effect
   function createRipple(event, button) {
     const rect = button.getBoundingClientRect();
     const circle = document.createElement('span');
     const diameter = Math.max(rect.width, rect.height);
     const radius = diameter / 2;
 
+    const clientX = event.clientX || (event.touches && event.touches[0].clientX) || (rect.left + radius);
+    const clientY = event.clientY || (event.touches && event.touches[0].clientY) || (rect.top + radius);
+
     circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${(event.clientX || (event.touches && event.touches[0].clientX) || rect.left + radius) - rect.left - radius}px`;
-    circle.style.top = `${(event.clientY || (event.touches && event.touches[0].touches) || rect.top + radius) - rect.top - radius}px`;
+    circle.style.left = `${clientX - rect.left - radius}px`;
+    circle.style.top = `${clientY - rect.top - radius}px`;
     circle.classList.add('ripple');
 
-    const ripple = button.getElementsByClassName('ripple')[0];
-    if (ripple) {
-      ripple.remove();
+    const existingRipple = button.querySelector('.ripple');
+    if (existingRipple) {
+      existingRipple.remove();
     }
 
     button.appendChild(circle);
     setTimeout(() => circle.remove(), 600);
   }
 
-  // 3. Handle Button Clicks with Micro-interactions & Toast
-  function handleDownloadClick(e, platform, button) {
-    createRipple(e, button);
-    triggerSparkles(button);
-
-    const config = APP_DOWNLOAD_CONFIG[platform];
-    if (config.url && config.url !== '#') {
-      return; // Allow native navigation if a real URL is set
-    }
-    
-    e.preventDefault();
-    showFeedbackToast(`🚀 ${config.title}: Ready for download! Connect your link in script.js.`);
-  }
-
-  if (btnIos) {
-    btnIos.addEventListener('click', (e) => handleDownloadClick(e, 'ios', btnIos));
-  }
-
-  if (btnAndroid) {
-    btnAndroid.addEventListener('click', (e) => handleDownloadClick(e, 'android', btnAndroid));
-  }
-
-  // 4. Interactive Logo Pop
-  if (logoWrapper) {
-    logoWrapper.addEventListener('click', (e) => {
-      createRipple(e, logoWrapper);
-      logoWrapper.style.transform = 'scale(1.15) rotate(-5deg)';
-      setTimeout(() => {
-        logoWrapper.style.transform = '';
-      }, 300);
-    });
-  }
-
-  // 5. Particle Sparkle Bursts
+  // 3. Sparkle Particle Bursts
   function triggerSparkles(element) {
     const rect = element.getBoundingClientRect();
     const colors = ['#00b359', '#34d399', '#ffffff', '#6ee7b7'];
@@ -132,12 +121,132 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 6. Aesthetic Toast Notification
-  function showFeedbackToast(message) {
-    let existingToast = document.querySelector('.toast-notification');
-    if (existingToast) {
-      existingToast.remove();
+  // 4. Open Modal with Platform-Specific Content
+  function openInstallModal(platform, event, button) {
+    if (event && button) {
+      createRipple(event, button);
+      triggerSparkles(button);
     }
+
+    currentPlatform = platform;
+
+    if (platform === 'ios') {
+      modalPlatformBadge.textContent = "APPLE IOS APP";
+      modalPlatformBadge.style.color = "#0f172a";
+      modalPlatformBadge.style.background = "rgba(15, 23, 42, 0.08)";
+      
+      modalTitle.textContent = "Install Seven Shine HRIS";
+      modalSubtitle.textContent = "Follow these quick steps in Safari to add Seven Shine HRIS to your Home Screen with the official icon:";
+
+      modalInstructions.innerHTML = `
+        <div class="instruction-step">
+          <span class="step-num">1</span>
+          <span class="step-text">Tap the <strong>Share</strong> button <span class="step-badge-icon">⎋ / [↑]</span> at the bottom of Safari.</span>
+        </div>
+        <div class="instruction-step">
+          <span class="step-num">2</span>
+          <span class="step-text">Scroll down and tap <strong>Add to Home Screen</strong> <span class="step-badge-icon">⊞</span>.</span>
+        </div>
+        <div class="instruction-step">
+          <span class="step-num">3</span>
+          <span class="step-text">Tap <strong>Add</strong> in the top right to save the app with the logo icon!</span>
+        </div>
+      `;
+
+      modalPrimaryBtnText.textContent = "Open HRIS & Install";
+    } else {
+      modalPlatformBadge.textContent = "ANDROID MOBILE APP";
+      modalPlatformBadge.style.color = "#008f47";
+      modalPlatformBadge.style.background = "rgba(0, 179, 89, 0.1)";
+
+      modalTitle.textContent = "Install Seven Shine HRIS";
+      modalSubtitle.textContent = "Install this application to your Home Screen for full-screen access and native performance:";
+
+      modalInstructions.innerHTML = `
+        <div class="instruction-step">
+          <span class="step-num">1</span>
+          <span class="step-text">Click <strong>Install Application</strong> below.</span>
+        </div>
+        <div class="instruction-step">
+          <span class="step-num">2</span>
+          <span class="step-text">Confirm <strong>Install / Add to Home screen</strong> in your browser prompt.</span>
+        </div>
+        <div class="instruction-step">
+          <span class="step-num">3</span>
+          <span class="step-text">Seven Shine HRIS will be added directly to your device home screen.</span>
+        </div>
+      `;
+
+      modalPrimaryBtnText.textContent = "Install Application Now";
+    }
+
+    installModal.classList.add('active');
+    installModal.setAttribute('aria-hidden', 'false');
+  }
+
+  // 5. Close Modal
+  function closeModal() {
+    installModal.classList.remove('active');
+    installModal.setAttribute('aria-hidden', 'true');
+  }
+
+  // 6. Handle Primary Modal Action Click (Install & Redirect)
+  async function handlePrimaryAction(e) {
+    createRipple(e, modalPrimaryBtn);
+    triggerSparkles(modalPrimaryBtn);
+
+    if (currentPlatform === 'android' && deferredPrompt) {
+      // Trigger native browser PWA install prompt
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      
+      closeModal();
+      // Redirect to the actual application
+      setTimeout(() => {
+        window.location.href = TARGET_APP_URL;
+      }, 500);
+    } else {
+      // Direct navigation to the web application
+      closeModal();
+      showToast("Opening Seven Shine HRIS application...");
+      setTimeout(() => {
+        window.location.href = TARGET_APP_URL;
+      }, 400);
+    }
+  }
+
+  // Event Listeners for Main Buttons
+  if (btnIos) {
+    btnIos.addEventListener('click', (e) => openInstallModal('ios', e, btnIos));
+  }
+
+  if (btnAndroid) {
+    btnAndroid.addEventListener('click', (e) => openInstallModal('android', e, btnAndroid));
+  }
+
+  // Modal Control Event Listeners
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+  if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+  if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+  if (modalPrimaryBtn) modalPrimaryBtn.addEventListener('click', handlePrimaryAction);
+
+  // Logo Bounce Interaction
+  if (mainLogo) {
+    mainLogo.addEventListener('click', (e) => {
+      createRipple(e, mainLogo);
+      triggerSparkles(mainLogo);
+      mainLogo.style.transform = 'scale(1.15) rotate(-5deg)';
+      setTimeout(() => {
+        mainLogo.style.transform = '';
+      }, 300);
+    });
+  }
+
+  // Toast Notification
+  function showToast(message) {
+    let existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
 
     const toast = document.createElement('div');
     toast.className = 'toast-notification';
@@ -156,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fontWeight: '600',
       textAlign: 'center',
       zIndex: '10000',
-      boxShadow: '0 20px 35px -5px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 20px 35px -5px rgba(0, 0, 0, 0.35)',
       opacity: '0',
       transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
       maxWidth: '90%',
@@ -175,6 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.95)';
       setTimeout(() => toast.remove(), 350);
-    }, 3800);
+    }, 3200);
   }
 });

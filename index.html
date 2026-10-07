@@ -3,9 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Seven Shine HRIS - Download App</title>
-  <meta name="description" content="Download the Seven Shine HRIS Mobile Application for iOS and Android." />
+  <title>Seven Shine HRIS - Download & Install App</title>
+  <meta name="description" content="Download and install the Seven Shine HRIS Mobile Application on iOS and Android." />
   <meta name="theme-color" content="#00a859" />
+
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/logo.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Seven Shine HRIS" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +51,7 @@
       <!-- Top Big Logo Section with Floating Glow -->
       <header class="logo-section">
         <div class="logo-aura"></div>
-        <div class="logo-wrapper animate-float">
+        <div class="logo-wrapper animate-float" id="mainLogo">
           <img src="assets/logo.png" alt="Seven Shine Logo" class="brand-logo" />
         </div>
       </header>
@@ -61,8 +69,7 @@
       <!-- Download Buttons Stack -->
       <section class="action-stack">
         <!-- iOS Download Button -->
-        <a href="#ios-download" class="download-btn ios-btn animate-slide-up delay-3" id="btnIos" role="button" aria-label="Download for iOS Users">
-          <div class="btn-glow"></div>
+        <button class="download-btn ios-btn animate-slide-up delay-3" id="btnIos" aria-label="Install for iOS Users">
           <div class="btn-shimmer"></div>
           <div class="btn-icon">
             <!-- Apple SVG Icon -->
@@ -79,11 +86,10 @@
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </div>
-        </a>
+        </button>
 
         <!-- Android Download Button -->
-        <a href="#android-download" class="download-btn android-btn animate-slide-up delay-4" id="btnAndroid" role="button" aria-label="Download for Android Users">
-          <div class="btn-glow"></div>
+        <button class="download-btn android-btn animate-slide-up delay-4" id="btnAndroid" aria-label="Install for Android Users">
           <div class="btn-shimmer"></div>
           <div class="btn-icon">
             <!-- Android SVG Icon -->
@@ -100,7 +106,7 @@
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </div>
-        </a>
+        </button>
       </section>
 
       <!-- Footer Info -->
@@ -115,6 +121,54 @@
       </footer>
     </div>
   </main>
+
+  <!-- Installation Modal Popup -->
+  <div class="modal-overlay" id="installModal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-card">
+      <div class="modal-shimmer"></div>
+      
+      <!-- Close Button -->
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Modal App Icon -->
+      <div class="modal-icon-wrapper">
+        <img src="assets/logo.png" alt="Seven Shine App Logo" class="modal-app-logo" />
+      </div>
+
+      <!-- Modal Content Header -->
+      <div class="modal-header">
+        <span class="modal-badge" id="modalPlatformBadge">INSTALL WEB APP</span>
+        <h3 class="modal-title" id="modalTitle">Install Seven Shine HRIS</h3>
+        <p class="modal-subtitle" id="modalSubtitle">
+          Save this application directly to your home screen for quick, fullscreen mobile access.
+        </p>
+      </div>
+
+      <!-- Instructions Container (Dynamic per OS) -->
+      <div class="modal-instructions" id="modalInstructions">
+        <!-- Dynamically injected via script.js -->
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div class="modal-actions">
+        <button class="modal-primary-btn" id="modalPrimaryBtn">
+          <svg class="btn-action-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span id="modalPrimaryBtnText">Install & Open Application</span>
+        </button>
+        <button class="modal-secondary-btn" id="modalCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
