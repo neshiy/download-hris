@@ -708,64 +708,7 @@ button {
   line-height: 1.45;
 }
 
-/* ==========================================================================
-   Modal URL Box (Explicit Link Display)
-   ========================================================================== */
-.modal-url-box {
-  width: 100%;
-  background: #f0fdf4;
-  border: 1.5px dashed rgba(0, 179, 89, 0.35);
-  border-radius: var(--radius-md);
-  padding: 10px 12px;
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  text-align: left;
-}
 
-.url-box-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: var(--primary-dark);
-  text-transform: uppercase;
-}
-
-.url-link-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  color: #047857;
-  text-decoration: none;
-  font-size: 0.78rem;
-  font-weight: 600;
-  word-break: break-all;
-  transition: color 0.2s ease;
-}
-
-.url-link-wrapper:hover {
-  color: #065f46;
-  text-decoration: underline;
-}
-
-.url-icon {
-  color: var(--primary-green);
-  flex-shrink: 0;
-}
-
-.url-text {
-  flex-grow: 1;
-  font-family: monospace, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.76rem;
-}
-
-.url-external-icon {
-  flex-shrink: 0;
-  opacity: 0.75;
-}
 
 /* Modal Instructions Steps */
 .modal-instructions {
