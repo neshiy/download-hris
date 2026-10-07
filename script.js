@@ -1,6 +1,5 @@
-// Seven Shine HRIS Direct Download Configuration
-const IOS_DOWNLOAD_URL = "sevenshine-hris.mobileconfig";
-const ANDROID_DOWNLOAD_URL = "SevenShine-HRIS.apk";
+// Target Application URL
+const TARGET_APP_URL = "https://sevenshine-pharmaceuticals-hris.onrender.com";
 
 document.addEventListener('DOMContentLoaded', () => {
   const cardContainer = document.getElementById('cardContainer');
@@ -116,53 +115,53 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPlatform = platform;
 
     if (platform === 'ios') {
-      modalPlatformBadge.textContent = "APPLE IOS APP DOWNLOAD";
+      modalPlatformBadge.textContent = "APPLE IOS APP INSTALL";
       modalPlatformBadge.style.color = "#0f172a";
       modalPlatformBadge.style.background = "rgba(15, 23, 42, 0.08)";
       
-      modalTitle.textContent = "Download Seven Shine HRIS";
-      modalSubtitle.textContent = "Download and save the app directly to your iPhone Home Screen:";
+      modalTitle.textContent = "Install Seven Shine HRIS";
+      modalSubtitle.textContent = "Open the application and save it directly to your iPhone Home Screen:";
 
       modalInstructions.innerHTML = `
         <div class="instruction-step">
           <span class="step-num">1</span>
-          <span class="step-text">Click <strong>Download Application Now</strong> to download the Web Clip file directly to your phone.</span>
+          <span class="step-text">Tap <strong>Install Application Now</strong> to open Seven Shine HRIS.</span>
         </div>
         <div class="instruction-step">
           <span class="step-num">2</span>
-          <span class="step-text">Open iPhone <strong>Settings</strong> &gt; tap <strong>Profile Downloaded</strong> &gt; tap <strong>Install</strong>.</span>
+          <span class="step-text">In Safari, tap the <strong>Share [↑]</strong> button at the bottom.</span>
         </div>
         <div class="instruction-step">
           <span class="step-num">3</span>
-          <span class="step-text">Seven Shine HRIS is saved directly on your Home Screen with the official logo!</span>
+          <span class="step-text">Select <strong>Add to Home Screen [+]</strong> to install the app with the official logo!</span>
         </div>
       `;
 
-      modalPrimaryBtnText.textContent = "Download Application Now";
+      modalPrimaryBtnText.textContent = "Install Application Now";
     } else {
-      modalPlatformBadge.textContent = "ANDROID APK DOWNLOAD";
+      modalPlatformBadge.textContent = "ANDROID APP INSTALL";
       modalPlatformBadge.style.color = "#008f47";
       modalPlatformBadge.style.background = "rgba(0, 179, 89, 0.1)";
 
-      modalTitle.textContent = "Download Seven Shine HRIS";
-      modalSubtitle.textContent = "Download the Android application directly to your device:";
+      modalTitle.textContent = "Install Seven Shine HRIS";
+      modalSubtitle.textContent = "Open the application and save it directly to your device Home Screen:";
 
       modalInstructions.innerHTML = `
         <div class="instruction-step">
           <span class="step-num">1</span>
-          <span class="step-text">Click <strong>Download Application Now</strong> to download the APK directly.</span>
+          <span class="step-text">Tap <strong>Install Application Now</strong> to go to the Seven Shine HRIS app.</span>
         </div>
         <div class="instruction-step">
           <span class="step-num">2</span>
-          <span class="step-text">When the download finishes, tap the notification or open <strong>Downloads</strong>.</span>
+          <span class="step-text">In your browser, tap <strong>Install App</strong> or tap the <strong>(⋮) menu ➔ Add to Home screen</strong>.</span>
         </div>
         <div class="instruction-step">
           <span class="step-num">3</span>
-          <span class="step-text">Tap <strong>Install</strong> to add Seven Shine HRIS to your phone with the app logo.</span>
+          <span class="step-text">Seven Shine HRIS is saved directly to your phone screen with the official app logo.</span>
         </div>
       `;
 
-      modalPrimaryBtnText.textContent = "Download Application Now";
+      modalPrimaryBtnText.textContent = "Install Application Now";
     }
 
     installModal.classList.add('active');
@@ -175,36 +174,17 @@ document.addEventListener('DOMContentLoaded', () => {
     installModal.setAttribute('aria-hidden', 'true');
   }
 
-  // 6. Direct File Download Handler (Does NOT open in Chrome / Navigate away)
+  // 6. Navigate to Seven Shine HRIS on Render to Install from there
   function handlePrimaryAction(e) {
     createRipple(e, modalPrimaryBtn);
     triggerSparkles(modalPrimaryBtn);
 
-    if (currentPlatform === 'ios') {
-      showToast("📥 Downloading iOS App Profile...");
+    showToast("🚀 Opening Seven Shine HRIS...");
+    closeModal();
 
-      // Direct file download for iOS WebClip
-      const link = document.createElement('a');
-      link.href = IOS_DOWNLOAD_URL;
-      link.setAttribute('download', 'SevenShine-HRIS.mobileconfig');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      closeModal();
-    } else {
-      showToast("📥 Downloading SevenShine-HRIS.apk to your phone...");
-
-      // Direct file download for Android APK
-      const link = document.createElement('a');
-      link.href = ANDROID_DOWNLOAD_URL;
-      link.setAttribute('download', 'SevenShine-HRIS.apk');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      closeModal();
-    }
+    setTimeout(() => {
+      window.location.href = TARGET_APP_URL;
+    }, 400);
   }
 
   // Event Listeners for Main Buttons
@@ -275,6 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.95)';
       setTimeout(() => toast.remove(), 350);
-    }, 3500);
+    }, 3000);
   }
 });
